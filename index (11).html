@@ -3,99 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VectorGlass Studio</title>
+    <title>VectorGlass Professional Studio</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Soft-edged custom cursor -->
+    <div id="vg-custom-cursor"></div>
+
     <header class="glass-panel">
-        <div class="logo-area">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 22h20L12 2zm0 4.8L18.6 19H5.4L12 6.8z" fill="#6366f1"/>
+        <div class="brand-container">
+            <svg class="logo" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 22h20L12 2zm0 4.8L18.6 19H5.4L12 6.8z" fill="#818cf8"/>
             </svg>
-            <span>VectorGlass</span>
+            <span class="brand-title">VectorGlass <span class="badge">PRO</span></span>
         </div>
 
-        <div class="menu-items">
-            <div class="dropdown">
-                <button class="menu-btn" id="start-menu-btn">File</button>
+        <nav class="menu-bar">
+            <div class="menu-item">
+                <button class="menu-trigger" id="start-menu-btn">File</button>
                 <div class="dropdown-content glass-panel">
-                    <button id="btn-new">New Workspace</button>
-                    <button id="btn-export">Export SVG</button>
+                    <button onclick="App.createNewWorkspace()">New Project</button>
+                    <button onclick="App.canvasManager.importSVG()">Import SVG...</button>
+                    <hr>
+                    <button onclick="App.canvasManager.exportSVG()">Export Production SVG</button>
                 </div>
             </div>
-            <div class="dropdown">
-                <button class="menu-btn">Edit</button>
+            <div class="menu-item">
+                <button class="menu-trigger">Edit</button>
                 <div class="dropdown-content glass-panel">
-                    <button id="btn-delete">Delete Selected</button>
+                    <button onclick="App.canvasManager.deleteSelected()">Delete Node/Object</button>
+                    <button onclick="App.canvasManager.clearCanvas()">Clear Artboard</button>
                 </div>
             </div>
-        </div>
+        </nav>
 
-        <div class="ad-remover-pill" id="adRemoverToggle">
-            <div class="toggle-dot"></div>
-            <span id="adStatusText">AdRemover: OFF</span>
+        <div class="utility-controls">
+            <div class="adblock-toggle glass-panel" id="ad-remover-pill" onclick="App.ui.toggleAdRemover()">
+                <div class="status-dot"></div>
+                <span id="ad-status-text">AdRemover: Active</span>
+            </div>
         </div>
     </header>
 
-    <div class="workspace-container">
-        <nav class="toolbar glass-panel">
-            <button class="tool-icon active" id="tool-select" title="Selection Tool">
-                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2l12 11.2-4.6.8 3.6 6.6-2.6 1.4-3.6-6.6-3.8 3.6z"/></svg>
-            </button>
-            <button class="tool-icon" id="tool-rect" title="Rectangle Tool">
-                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h18v18H3z"/></svg>
-            </button>
-            <button class="tool-icon" id="tool-circle" title="Ellipse Tool">
-                <svg viewBox="0 0 24 24"><circle fill="currentColor" cx="12" cy="12" r="10"/></svg>
-            </button>
-            <button class="tool-icon" id="tool-line" title="Line Tool">
-                <svg viewBox="0 0 24 24"><line x1="3" y1="21" x2="21" y2="3" stroke="currentColor" stroke-width="2"/></svg>
-            </button>
-            <button class="tool-icon" id="tool-text" title="Text Tool">
-                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
-            </button>
-        </nav>
+    <div class="app-layout">
+        <!-- Left Tool Dock -->
+        <aside class="sidebar-left glass-panel">
+            <div class="tool-grid">
+                <button class="tool-btn active" data-tool="transform" title="Transform & Bound Box (V)">V</button>
+                <button class="tool-btn" data-tool="pen" title="Bezier Pen Tool (P)">P</button>
+                <button class="tool-btn" data-tool="path-editor" title="Direct Node Editor (A)">A</button>
+                <button class="tool-btn" data-tool="gradient" title="Linear Gradient Tool (G)">G</button>
+                <button class="tool-btn" data-tool="text" title="Advanced Typography (T)">T</button>
+            </div>
+        </aside>
 
-        <main class="canvas-viewport">
-            <svg id="vector-canvas" width="800" height="550" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
+        <!-- Dynamic Editing Canvas Viewport -->
+        <main class="canvas-viewport" id="viewport">
+            <div class="canvas-container">
+                <svg id="production-canvas" width="800" height="600" xmlns="http://w3.org">
+                    <defs id="canvas-defs"></defs>
+                    <g id="vector-runtime-stage"></g>
+                    <g id="vector-interactive-overlay"></g>
+                </svg>
+            </div>
         </main>
 
-        <aside class="sidebar glass-panel">
-            <div class="sidebar-section">
-                <h3>Vector Attributes</h3>
-                <div class="property-group">
-                    <div class="prop-row">
-                        <label for="fillColor">Fill Color</label>
-                        <input type="color" id="fillColor" value="#6366f1">
+        <!-- Right System Parameters Control Tower -->
+        <aside class="sidebar-right glass-panel">
+            <section class="control-group">
+                <h3>Geometry Transform</h3>
+                <div class="input-row-twin">
+                    <div class="field">
+                        <label>W</label>
+                        <input type="number" id="geo-w" value="800" disabled>
                     </div>
-                    <div class="prop-row">
-                        <label for="strokeColor">Stroke Color</label>
-                        <input type="color" id="strokeColor" value="#ffffff">
-                    </div>
-                    <div class="prop-row">
-                        <label for="strokeWidth">Stroke Width</label>
-                        <input type="number" id="strokeWidth" value="2" min="0" max="20">
-                    </div>
-                    <div class="prop-row" id="text-input-row" style="display: none;">
-                        <label for="textString">Text Content</label>
-                        <input type="text" id="textString" value="Hello" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); color:#fff; padding:4px; border-radius:4px; width:120px;">
+                    <div class="field">
+                        <label>H</label>
+                        <input type="number" id="geo-h" value="600" disabled>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="sidebar-section">
-                <h3>Layers</h3>
-                <div class="layers-list" id="layersContainer"></div>
-            </div>
+            <section class="control-group">
+                <h3>Vector Rendering Pipeline</h3>
+                <div class="input-row">
+                    <label>Fill Rules</label>
+                    <select id="prop-fill-type">
+                        <option value="solid">Solid Color</option>
+                        <option value="gradient">Linear Gradient</option>
+                        <option value="none">None</option>
+                    </select>
+                </div>
+                <div class="input-row" id="solid-fill-row">
+                    <label>Fill Hex</label>
+                    <input type="color" id="prop-fill-color" value="#818cf8">
+                </div>
+                <div class="input-row">
+                    <label>Stroke Hex</label>
+                    <input type="color" id="prop-stroke-color" value="#ffffff">
+                </div>
+                <div class="input-row">
+                    <label>Weight</label>
+                    <input type="number" id="prop-stroke-width" min="0" max="100" value="2">
+                </div>
+            </section>
 
-            <div class="ad-container" id="workspaceAdBox">
-                <span class="ad-badge">Sponsored Advertisement</span>
-                <p class="ad-text">Upgrade your workflow with Premium Asset Packs!</p>
+            <section class="control-group fill-flex">
+                <h3>Layer Matrix Hierarchy</h3>
+                <div class="layer-tree-view" id="layer-tree"></div>
+            </section>
+
+            <!-- Embedded Sponsor System Targeted by AdRemover -->
+            <div class="sponsor-billboard-container" id="ad-wrapper">
+                <div class="sponsor-card">
+                    <span class="tag">SPONSOR</span>
+                    <p>Upgrade to VectorGlass Enterprise Node Cluster for infinite cloud layers.</p>
+                </div>
             </div>
         </aside>
     </div>
 
-    <script src="canvas.js"></script>
-    <script src="ui.js"></script>
+    <!-- Initialization Core Bundles -->
+    <script src="src/tools/tool-manager.js"></script>
+    <script src="src/tools/transform-tool.js"></script>
+    <script src="src/tools/pen-tool.js"></script>
+    <script src="src/tools/path-editor-tool.js"></script>
+    <script src="src/tools/gradient-tool.js"></script>
+    <script src="src/tools/text-tool.js"></script>
+    <script src="src/canvas.js"></script>
+    <script src="src/ui.js"></script>
+    <script src="src/app.js"></script>
 </body>
 </html>
