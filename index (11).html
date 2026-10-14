@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VectorGlass Studio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="glass-panel">
+        <div class="logo-area">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 22h20L12 2zm0 4.8L18.6 19H5.4L12 6.8z" fill="#6366f1"/>
+            </svg>
+            <span>VectorGlass</span>
+        </div>
+
+        <div class="menu-items">
+            <div class="dropdown">
+                <button class="menu-btn" id="start-menu-btn">File</button>
+                <div class="dropdown-content glass-panel">
+                    <button id="btn-new">New Workspace</button>
+                    <button id="btn-export">Export SVG</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="menu-btn">Edit</button>
+                <div class="dropdown-content glass-panel">
+                    <button id="btn-delete">Delete Selected</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ad-remover-pill" id="adRemoverToggle">
+            <div class="toggle-dot"></div>
+            <span id="adStatusText">AdRemover: OFF</span>
+        </div>
+    </header>
+
+    <div class="workspace-container">
+        <nav class="toolbar glass-panel">
+            <button class="tool-icon active" id="tool-select" title="Selection Tool">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 2l12 11.2-4.6.8 3.6 6.6-2.6 1.4-3.6-6.6-3.8 3.6z"/></svg>
+            </button>
+            <button class="tool-icon" id="tool-rect" title="Rectangle Tool">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h18v18H3z"/></svg>
+            </button>
+            <button class="tool-icon" id="tool-circle" title="Ellipse Tool">
+                <svg viewBox="0 0 24 24"><circle fill="currentColor" cx="12" cy="12" r="10"/></svg>
+            </button>
+            <button class="tool-icon" id="tool-line" title="Line Tool">
+                <svg viewBox="0 0 24 24"><line x1="3" y1="21" x2="21" y2="3" stroke="currentColor" stroke-width="2"/></svg>
+            </button>
+            <button class="tool-icon" id="tool-text" title="Text Tool">
+                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
+            </button>
+        </nav>
+
+        <main class="canvas-viewport">
+            <svg id="vector-canvas" width="800" height="550" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
+        </main>
+
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-section">
+                <h3>Vector Attributes</h3>
+                <div class="property-group">
+                    <div class="prop-row">
+                        <label for="fillColor">Fill Color</label>
+                        <input type="color" id="fillColor" value="#6366f1">
+                    </div>
+                    <div class="prop-row">
+                        <label for="strokeColor">Stroke Color</label>
+                        <input type="color" id="strokeColor" value="#ffffff">
+                    </div>
+                    <div class="prop-row">
+                        <label for="strokeWidth">Stroke Width</label>
+                        <input type="number" id="strokeWidth" value="2" min="0" max="20">
+                    </div>
+                    <div class="prop-row" id="text-input-row" style="display: none;">
+                        <label for="textString">Text Content</label>
+                        <input type="text" id="textString" value="Hello" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); color:#fff; padding:4px; border-radius:4px; width:120px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Layers</h3>
+                <div class="layers-list" id="layersContainer"></div>
+            </div>
+
+            <div class="ad-container" id="workspaceAdBox">
+                <span class="ad-badge">Sponsored Advertisement</span>
+                <p class="ad-text">Upgrade your workflow with Premium Asset Packs!</p>
+            </div>
+        </aside>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script src="ui.js"></script>
+</body>
+</html>
